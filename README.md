@@ -6,9 +6,9 @@ Implementación del **Problema 3 (Domótica Agrícola: recomendaciones de riego 
 
 | Etapa | Actividad | Rama / Entregable | Pareja responsable |
 | :--- | :--- | :--- | :--- |
-| **Paso 1** | Implementación del programa en Java + Maven (SOLID) | Rama `develop` | **Pareja 3** |
-| **Paso 2** | Diseño de casos de prueba (clases de equivalencia, valores límite, conjetura de errores, each use, pairwise, decisiones y MC/DC) | `ISO2-2026-Grupo3C1.02-Testing-P3.pdf` + Wiki | **Pareja 1** |
-| **Paso 3** | Implementación de pruebas JUnit 5 y cobertura JaCoCo (≥ 80 %) | Rama `hotfix` + informes en Wiki | **Pareja 2** |
+| **Paso 1** | Implementación del programa en Java + Maven (SOLID) | Rama `develop` | **Pareja 3:** Álvaro Martínez y Álvaro Meléndez |
+| **Paso 2** | Diseño de casos de prueba (clases de equivalencia, valores límite, conjetura de errores, each use, pairwise, decisiones y MC/DC) | `ISO2-2026-Grupo3C1.02-Testing-P3.pdf` + Wiki | **Pareja 1:** Rubén Alamino y Javier Casasola |
+| **Paso 3** | Implementación de pruebas JUnit 5 y cobertura JaCoCo (≥ 80 %) | Rama `hotfix` + informes en Wiki | **Pareja 2:** Raúl Martínez y Silviu-Daniel Zamfir |
 
 ## Estructura
 
