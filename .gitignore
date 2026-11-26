@@ -1,7 +1,7 @@
 target/
 .idea/
 *.iml
-.vscode/
 .classpath
 .project
 .settings/
+.DS_Store

@@ -1,73 +1,45 @@
 package es.uclm.esi.iso2.riego.ui;
 
-import es.uclm.esi.iso2.riego.exception.LecturaInvalidaException;
-import es.uclm.esi.iso2.riego.model.LecturaInvernadero;
-import es.uclm.esi.iso2.riego.model.Recomendacion;
-import es.uclm.esi.iso2.riego.service.IRecomendadorRiego;
+import es.uclm.esi.iso2.riego.exception.DatosInvernaderoInvalidosException;
+import es.uclm.esi.iso2.riego.model.EstadoInvernadero;
+import es.uclm.esi.iso2.riego.model.RecomendacionRiego;
+import es.uclm.esi.iso2.riego.service.IServicioRiego;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class ConsolaRiego {
-    private static final DateTimeFormatter FORMATO_HORA = DateTimeFormatter.ofPattern("HH:mm");
     private final Scanner scanner;
-    private final IRecomendadorRiego recomendador;
+    private final IServicioRiego servicioRiego;
 
-    public ConsolaRiego(Scanner scanner, IRecomendadorRiego recomendador) {
+    public ConsolaRiego(Scanner scanner, IServicioRiego servicioRiego) {
         this.scanner = scanner;
-        this.recomendador = recomendador;
+        this.servicioRiego = servicioRiego;
     }
 
     public void iniciar() {
-        mostrarMensaje("=== SISTEMA DE RECOMENDACIÓN DE RIEGO PARA INVERNADEROS ===");
+        System.out.println("=== SISTEMA DE DOMÓTICA AGRÍCOLA: CONTROL DE RIEGO ===");
         try {
-            double humedad = leerDecimal("Introduzca la humedad del suelo (%): ");
-            double temperatura = leerDecimal("Introduzca la temperatura ambiente (ºC): ");
-            boolean lluvia = leerSiNo("¿Hay previsión de lluvia en las próximas 24 horas? (s/n): ");
-            LocalTime hora = leerHora("Introduzca la hora actual (HH:mm): ");
+            System.out.print("Introduzca humedad del suelo (%): ");
+            double humedad = Double.parseDouble(scanner.nextLine().trim());
 
-            LecturaInvernadero lectura = new LecturaInvernadero(humedad, temperatura, lluvia, hora);
-            Recomendacion recomendacion = recomendador.recomendar(lectura);
-            mostrarMensaje("Recomendación: " + recomendacion.getDescripcion());
-        } catch (LecturaInvalidaException e) {
-            mostrarError("Error en los datos de la lectura: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            mostrarError("Valor numérico inválido. Use un número, por ejemplo 35 o 22.5.");
-        } catch (DateTimeParseException e) {
-            mostrarError("Formato de hora inválido. Use exactamente HH:mm.");
+            System.out.print("Introduzca temperatura ambiente (ºC): ");
+            double temperatura = Double.parseDouble(scanner.nextLine().trim());
+
+            System.out.print("¿Existe previsión de lluvia? (true/false): ");
+            boolean lluvia = Boolean.parseBoolean(scanner.nextLine().trim());
+
+            System.out.print("Introduzca hora actual (HH:mm): ");
+            LocalTime hora = LocalTime.parse(scanner.nextLine().trim());
+
+            EstadoInvernadero estado = new EstadoInvernadero(humedad, temperatura, lluvia, hora);
+            RecomendacionRiego recomendacion = servicioRiego.evaluarCicloRiego(estado);
+
+            System.out.println("Recomendación del sistema: " + recomendacion.getDescripcion());
+        } catch (DatosInvernaderoInvalidosException e) {
+            System.err.println("Error de validación: " + e.getMessage());
+        } catch (NumberFormatException | DateTimeParseException e) {
+            System.err.println("Error en el formato de los datos introducidos.");
         }
-    }
-
-    public double leerDecimal(String mensaje) throws NumberFormatException {
-        System.out.print(mensaje);
-        String entradaTexto = scanner.nextLine().trim().replace(',', '.');
-        return Double.parseDouble(entradaTexto);
-    }
-
-    public boolean leerSiNo(String mensaje) throws LecturaInvalidaException {
-        System.out.print(mensaje);
-        String entradaTexto = scanner.nextLine().trim().toLowerCase();
-        if (entradaTexto.equals("s") || entradaTexto.equals("si") || entradaTexto.equals("sí")) {
-            return true;
-        }
-        if (entradaTexto.equals("n") || entradaTexto.equals("no")) {
-            return false;
-        }
-        throw new LecturaInvalidaException("Responda 's' o 'n' a la previsión de lluvia.");
-    }
-
-    public LocalTime leerHora(String mensaje) throws DateTimeParseException {
-        System.out.print(mensaje);
-        String entradaTexto = scanner.nextLine().trim();
-        return LocalTime.parse(entradaTexto, FORMATO_HORA);
-    }
-
-    public void mostrarMensaje(String mensaje) {
-        System.out.println(mensaje);
-    }
-
-    public void mostrarError(String mensaje) {
-        System.err.println(mensaje);
     }
 }
